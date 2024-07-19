@@ -5,7 +5,7 @@ import { checkSecretPassword } from '../middleware/app.middleware';
 const userRouter = express.Router()
 
 userRouter.get('/',validateToken, ctrl.getUsers);
-userRouter.post('/', validateToken, checkSecretPassword, ctrl.createUser);
+userRouter.post('/', checkSecretPassword, ctrl.createUser);
 userRouter.put('/:id',validateToken, checkSecretPassword, ctrl.updateUser);
 userRouter.delete('/:id',validateToken, checkSecretPassword, ctrl.deleteUser);
 
