@@ -6,6 +6,6 @@ export const checkSecretPassword = (req: Request, res: Response, next: NextFunct
     if (secret === config.secret_key) {
         next(); 
     } else {
-        return res.status(200).json({ message: 'ACCESS DENIED' });
+        return res.status(401).json({ message: 'ACCESS DENIED' });
     }
 }

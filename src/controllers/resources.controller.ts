@@ -51,15 +51,15 @@ const create = async (req: Request, res: Response) => {
     try {
         const existingData = getDataFromJson();
         const newData = _.omit(req.body, 'secret');
-        
+
         if (!isValidResources(newData)) {
             throw new Error('Invalid resource data');
         }
-        
-        const uniqueId = uuidv4(); 
-        const newDataWithId = _.assign({ id: uniqueId }, _.clone(newData)); 
-        
-        existingData.push(newDataWithId);
+
+        const uniqueId = uuidv4();
+        const data = _.assign({ id: uniqueId}, _.clone(newData), {createdAt: new Date, updatedAt: new Date });
+
+        existingData.push(data);
         fs.writeFileSync('db/resources.json', JSON.stringify(existingData, null, 2));
         res.status(200).json({ message: "Resource created successfully" });
     } catch (error: any) {
@@ -72,20 +72,20 @@ const update = async (req: Request, res: Response) => {
         const existingData = getDataFromJson();
         const { uuid } = req.params;
         const newData = _.omit(req.body, 'secret');
-        
+
         if (!isValidResources(newData)) {
             throw new Error('Invalid resource data');
         }
-        
+
         const resourceIndex = existingData.findIndex((data) => data.id === uuid);
-        
+
         if (resourceIndex === -1) {
             throw new Error('Resource not found');
         }
-        
-        const updatedData = _.assign({}, existingData[resourceIndex], newData);
+
+        const updatedData = _.assign(existingData[resourceIndex], newData, {updatedAt: new Date});
         existingData[resourceIndex] = updatedData;
-        
+
         fs.writeFileSync('db/resources.json', JSON.stringify(existingData, null, 2));
         res.status(200).json({ message: "Resource updated successfully" });
     } catch (error: any) {
@@ -113,4 +113,4 @@ const deleteResource = async (req: Request, res: Response) => {
     }
 };
 
-export default {  getData, create, update, deleteResource, searchResource };
+export default { getData, create, update, deleteResource, searchResource };

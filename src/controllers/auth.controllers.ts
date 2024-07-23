@@ -5,9 +5,9 @@ import bcrypt from "bcryptjs";
 import jwt, { Secret } from 'jsonwebtoken';
 import config from '../config/auth.config';
 import _ from "lodash"
-const users = getUserFromJson();
 
 const signin = async (req: Request, res: Response) => {
+    const users = getUserFromJson();
     try {
         const { username, password } = req.body
         if (!username || !password) {
@@ -34,6 +34,7 @@ const signin = async (req: Request, res: Response) => {
 }
 
 const signout = async (req: Request, res: Response) => {
+    const users = getUserFromJson();
     try {
         const token = req?.cookies?.access_token;
         if (!token) return res.status(500).json({ error: 'Internal Server Error' })
