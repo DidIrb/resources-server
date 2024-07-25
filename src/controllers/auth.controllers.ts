@@ -19,8 +19,10 @@ const signin = async (req: Request, res: Response) => {
         } else {
             const match = await bcrypt.compare(password, user.password);
             if (!match) return res.status(400).json({ error: `Incorrect password!` })
-            const accessToken = jwt.sign({ user: user.id }, config.secret as Secret, { expiresIn: '30m' });
-            res.cookie('access_token', accessToken, { httpOnly: true, maxAge: 30 * 1000 * 60 });
+            // const accessToken = jwt.sign({ user: user.id }, config.secret as Secret, { expiresIn: '30m' });
+            // res.cookie('access_token', accessToken, { httpOnly: true, maxAge: 30 * 1000 * 60 });
+            const accessToken = jwt.sign({ user: user.id }, config.secret as Secret, { expiresIn: '60h' });
+            res.cookie('access_token', accessToken, { httpOnly: true, maxAge: 60 * 60 * 60 * 1000 }); // 60 hours
         }
 
         const userData = _.omit(user, ["password"]);

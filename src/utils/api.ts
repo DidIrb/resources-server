@@ -1,6 +1,7 @@
 import fs from "fs";
 import { User } from "../types/app.types";
-import { Resources, tags, types } from "../types/data.types";
+import { Resources } from "../types/data.types";
+import { tagsEnum, typesEnum } from "../controllers/enum.controller";
 
 export const update = (arr: any[], id: number, update: any) => {
     return arr.map((item) => (item.id === id ? { ...item, ...update } : item));
@@ -44,8 +45,9 @@ export const getDataFromJson = () => {
     return data;
 };
 
+
 export function isValidResources(obj: any): obj is Resources {
-    if (!Object.values(types).includes(obj.type)) {
+    if (!Object.values(typesEnum).includes(obj.type)) {
         throw new Error(`Invalid type value: ${obj.type}`);
     }
     if (typeof obj.title !== 'string' || obj.title.trim() === '') {
@@ -58,10 +60,10 @@ export function isValidResources(obj: any): obj is Resources {
         throw new Error('Link is required');
     }
     if (!Array.isArray(obj.tags)) {
-        return false;
+        throw new Error('Tags must be an array');
     }
     for (const tag of obj.tags) {
-        if (!Object.values(tags).includes(tag)) {
+        if (!Object.values(tagsEnum).includes(tag)) {
             throw new Error(`Invalid tag value: ${tag}`);
         }
     }

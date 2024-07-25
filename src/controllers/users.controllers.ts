@@ -25,9 +25,17 @@ const createUser = async (req: Request, res: Response) => {
         const users = getUserFromJson();
         const newUser = req.body;
         const { secret, ...userData } = newUser;
+
+        const existingUser = users.find(user => user.email === newUser.email || user.username === newUser.username);
+        if (existingUser) {
+            return res.status(400).json({ error: 'User with same email or username already exists' });
+        }
+
         const hashedPassword = await bcrypt.hash(newUser.password, 10);
         const id = getNextId(users);
-        const user = { id: id, ...userData, password: hashedPassword, createdAt: new Date(), updatedAt: new Date() };
+        const role = users.length === 0 ? 'super_admin' : 'user';
+        const user = { id, ...userData, password: hashedPassword, role, createdAt: new Date(), updatedAt: new Date() };
+        
         users.push(user);
         fs.writeFileSync('db/users.json', JSON.stringify(users, null, 2));
         res.status(200).json({ message: "User created successfully" });
@@ -36,18 +44,25 @@ const createUser = async (req: Request, res: Response) => {
     }
 };
 
-
-const updateUser = (req: Request, res: Response) => {
+const updateUser = async (req: Request, res: Response) => {
     try {
         const id = parseInt(req.params.id);
         const users = getUserFromJson();
         const user = users.find((user: User) => user.id === id);
+
         if (user) {
-            const updatedUsers = update(users, id, { ...req.body, updatedAt: new Date() });
+            const { password, ...otherUpdates } = req.body;
+
+            if (password) {
+                const hashedPassword = await bcrypt.hash(password, 10);
+                otherUpdates.password = hashedPassword;
+            }
+
+            const updatedUsers = update(users, id, { ...otherUpdates, updatedAt: new Date() });
             fs.writeFileSync('db/users.json', JSON.stringify(updatedUsers, null, 2));
-            res.send('User updated successfully');
+            res.status(200).json({ message: "User updated successfully" });
         } else {
-            res.status(404).send({ error: 'User not found' });
+            res.status(404).json({ error: "User not found" });
         }
     } catch (error) {
         res.status(500).send({ error: 'Error updating user' });
@@ -62,7 +77,7 @@ const deleteUser = (req: Request, res: Response) => {
         if (index !== -1) {
             users.splice(index, 1);
             fs.writeFileSync('db/users.json', JSON.stringify(users, null, 2));
-            res.send({ message: 'User deleted successfully' }).status(200)
+            res.json({ message: 'User deleted successfully' }).status(200)
         } else {
             res.status(404).send({ error: 'User not found' })
         }

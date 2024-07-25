@@ -1,21 +1,24 @@
-// Resources Data type
+// Filter to prevent duplicates
 export enum tags {
     "coding", "github"
 }
 export enum types {
     "tool", "website", "app"
 }
-export enum roles {
-    "admin", "user", "super_admin"
+
+export enum Roles {
+    Admin = "admin",
+    User = "user",
+    SuperAdmin = "super_admin"
 }
 
 export interface Resources {
     id: string;
     icon: string;
-    type: types;
+    type: string;
     title: string;
     description: string;
-    tags: tags[];
+    tags: string[];
     link: string;
 }
 

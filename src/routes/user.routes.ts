@@ -7,6 +7,6 @@ const userRouter = express.Router()
 userRouter.get('/',validateToken, ctrl.getUsers);
 userRouter.post('/', checkSecretPassword, ctrl.createUser);
 userRouter.put('/:id',validateToken, checkSecretPassword, ctrl.updateUser);
-userRouter.delete('/:id',validateToken, checkSecretPassword, ctrl.deleteUser);
+userRouter.post('/:id',validateToken, checkSecretPassword, ctrl.deleteUser);
 
 export default userRouter;

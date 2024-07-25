@@ -18,35 +18,47 @@ const getData = (req: Request, res: Response) => {
 
         res.status(200).json(responseData);
     } catch (error: any) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ error: error.message });
     }
 };
 
 const searchResource = (req: Request, res: Response) => {
     try {
-        const { query, fields } = req.query as { query: string, fields: string | string[] };
-        const searchFields = Array.isArray(fields) ? fields : [fields]; // Ensure fields is always an array
+        const { query, fields, tags, type } = req.query as { query?: string, fields?: string | string[], tags?: string | string[], type?: string | string[] };
+        const searchFields = fields ? (Array.isArray(fields) ? fields : fields.split(',')) : [];
+        const typesArray = type ? (Array.isArray(type) ? type : type.split(',')) : [];
+        const tagsArray = tags ? (Array.isArray(tags) ? tags : tags.split(',')) : [];
         const data = getDataFromJson();
 
-        if (!query || !searchFields || searchFields.length === 0) {
-            throw new Error('Query and fields are required');
-        }
-
         const results = data.filter((resource) => {
-            return searchFields.some((field) => {
-                const value = resource[field as keyof typeof resource];
-                if (typeof value === 'string') {
-                    return value.toLowerCase().includes(query.toString().toLowerCase());
-                }
-                return false;
-            });
+            let matches = true;
+
+            if (tagsArray.length > 0) {
+                matches = matches && tagsArray.some(tag => resource.tags.includes(tag));
+            }
+
+            if (typesArray.length > 0) {
+                matches = matches && typesArray.includes(resource.type);
+            }
+
+            if (query && searchFields.length > 0) {
+                matches = matches && searchFields.some((field) => {
+                    const value = resource[field as keyof typeof resource];
+                    if (typeof value === 'string') {
+                        return value.toLowerCase().includes(query.toLowerCase());
+                    }
+                    return false;
+                });
+            }
+            return matches;
         });
 
         res.status(200).json(results);
     } catch (error: any) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ error: error.message });
     }
 };
+
 const create = async (req: Request, res: Response) => {
     try {
         const existingData = getDataFromJson();
@@ -63,7 +75,7 @@ const create = async (req: Request, res: Response) => {
         fs.writeFileSync('db/resources.json', JSON.stringify(existingData, null, 2));
         res.status(200).json({ message: "Resource created successfully" });
     } catch (error: any) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ error: error.message });
     }
 };
 
@@ -89,7 +101,7 @@ const update = async (req: Request, res: Response) => {
         fs.writeFileSync('db/resources.json', JSON.stringify(existingData, null, 2));
         res.status(200).json({ message: "Resource updated successfully" });
     } catch (error: any) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ error: error.message });
     }
 };
 

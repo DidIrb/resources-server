@@ -11,10 +11,10 @@ const validateToken = (req: Request, res: Response, next: NextFunction) => {
       (req as Request & { user?: any }).user = decoded.user;
       next(); 
     } catch (err) {
-      return res.status(401).json({ message: 'Invalid token' });
+      return res.status(401).json({ error: 'Invalid token' });
     }
   } else {
-    return res.status(401).json({ message: 'Access denied, No token provided', isToken: false });
+    return res.status(401).json({ error: 'Access denied, No token provided', isToken: false });
   }
 };
 
