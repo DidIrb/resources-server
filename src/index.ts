@@ -20,7 +20,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use(router);
 app.all("*", (req: Request, res: Response) => {
-    return res.json({ error: "Page not found" });
+    return res.status(404).json({ error: "Page not found" });
 });
 
 app.listen(port, () => {

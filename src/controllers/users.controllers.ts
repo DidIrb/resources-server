@@ -69,6 +69,36 @@ const updateUser = async (req: Request, res: Response) => {
     }
 };
 
+const updateProfile = async (req: Request, res: Response) => {
+    try {
+        const id = parseInt(req.params.id);
+        const users = getUserFromJson();
+        const user = users.find((user: User) => user.id === id);
+
+        if (user) {
+            const { password, role, ...otherUpdates } = req.body;
+
+            // Prevent role from being updated
+            if (role) {
+                return res.status(403).json({ error: "You are not allowed to change your role" });
+            }
+
+            if (password) {
+                const hashedPassword = await bcrypt.hash(password, 10);
+                otherUpdates.password = hashedPassword;
+            }
+
+            const updatedUsers = update(users, id, { ...user, ...otherUpdates, updatedAt: new Date() });
+            fs.writeFileSync('db/users.json', JSON.stringify(updatedUsers, null, 2));
+            res.status(200).json({ message: "Profile updated successfully" });
+        } else {
+            res.status(404).json({ error: "User not found" });
+        }
+    } catch (error) {
+        res.status(500).send({ error: 'Error updating profile' });
+    }
+};
+
 const deleteUser = (req: Request, res: Response) => {
     try {
         const users = getUserFromJson();
@@ -86,4 +116,4 @@ const deleteUser = (req: Request, res: Response) => {
     }
 };
 
-export default { getUsers, updateUser, createUser, deleteUser };
+export default { getUsers, updateUser, createUser, deleteUser, updateProfile };

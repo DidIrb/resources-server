@@ -57,7 +57,7 @@ const manageEnums = (type: 'tags' | 'types') => (req: Request, res: Response) =>
     if (data) {
         if (!Object.values(type === 'tags' ? tagsEnum : typesEnum).includes(data)) {
             updateEnums(type, data);
-            return res.status(201).json({ message: `${type.slice(0, -1)} created successfully` });
+            return res.status(200).json({ message: `${type.slice(0, -1)} created successfully` });
         } else {
             return res.status(400).json({ error: `${type.slice(0, -1)} already exists` });
         }

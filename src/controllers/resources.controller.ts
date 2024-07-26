@@ -13,7 +13,6 @@ const getData = (req: Request, res: Response) => {
 
         const startIndex = (page - 1) * pageSize;
         const endIndex = page * pageSize;
-
         const responseData = data.slice(startIndex, endIndex);
 
         res.status(200).json(responseData);
@@ -53,11 +52,15 @@ const searchResource = (req: Request, res: Response) => {
             return matches;
         });
 
-        res.status(200).json(results);
+        const totalMatches = results.length;
+        const limitedResults = results.slice(0, 2); // Limit the results to 2
+
+        res.status(200).json({ totalMatches, limitedResults });
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }
 };
+
 
 const create = async (req: Request, res: Response) => {
     try {

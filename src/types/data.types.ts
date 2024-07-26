@@ -20,6 +20,7 @@ export interface Resources {
     description: string;
     tags: string[];
     link: string;
+    updatedAt: Date;
 }
 
 export interface CustomError {
