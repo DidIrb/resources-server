@@ -1,0 +1,1 @@
+// Middleware to protect routes based on the users role

@@ -2,13 +2,16 @@
 This is an express backend that uses JSON file as a database to 
 - Manage data in json file.
 - Authenticate users.
+- Manage user data.
+- Get paginated data.
+- Advanced Search query.
 
 ## Getting started
 
 Clone the branch
 
 ```
-git clone -b
+git clone https://github.com/DidIrb/resources.git
 ```
 Install dependencies
 ```
