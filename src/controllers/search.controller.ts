@@ -14,10 +14,8 @@ const searchResource = (req: Request, res: Response) => {
         };
         const data = getDataFromJson();
 
-        // Sort by updatedAt (ascending or descending) 
-        // I may need to change this based transfer it to get method
         const sortedData = order === 'asc'
-            ? data.sort((a, b) => new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime()) 
+            ? data.sort((a, b) => new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime())
             : data.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
 
         const currentPage = page || 1;
@@ -56,13 +54,14 @@ const searchResource = (req: Request, res: Response) => {
 
         // Get the relevant subset of results
         const paginatedResults = results.slice(startIndex, endIndex);
-
-        res.status(200).json({ totalMatches: results.length, paginatedResults });
+        if(paginatedResults.length === 0){
+            throw Error("Search Request Returned No Results");
+        } else {
+            res.status(200).json({ totalMatches: results.length, paginatedResults });
+        }
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }
 };
 
-
-
-export default {searchResource}
+export default { searchResource }
