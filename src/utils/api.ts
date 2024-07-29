@@ -2,7 +2,7 @@ import fs from "fs";
 import { User } from "../types/app.types";
 import { Resources } from "../types/data.types";
 import { tagsEnum, typesEnum } from "../controllers/enum.controller";
-
+import * as path from 'path';
 export const update = (arr: any[], id: number, update: any) => {
     return arr.map((item) => (item.id === id ? { ...item, ...update } : item));
 }
@@ -35,6 +35,7 @@ export const getUserFromJson = () => {
     }
     return users;
 };
+
 export const getDataFromJson = () => {
     createDbFolderIfNotExists();
     const filePath = 'db/resources.json';

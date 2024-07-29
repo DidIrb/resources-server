@@ -2,24 +2,40 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Request, Response } from 'express';
 
-const enumsFilePath = path.resolve('db/enums.json');
-
 let tagsEnum: { [key: string]: string } = {};
 let typesEnum: { [key: string]: string } = {};
 
-const readEnumsFromFile = (): { tags: string[], types: string[] } => {
+
+const createDbFolderIfNotExists = () => {
+    const dbFolderPath = 'db';
+    if (!fs.existsSync(dbFolderPath)) {
+        fs.mkdirSync(dbFolderPath);
+    }
+}
+
+export const enumsFilePath = path.resolve('db/enums.json');
+
+
+export const readEnumsFromFile = () => {
+    createDbFolderIfNotExists();
+    const filePath = enumsFilePath;
+    console.log(filePath);
+    if (!fs.existsSync(filePath)) {
+        fs.writeFileSync(filePath, '{"tags": [], "types": []}');
+    }
+    let enums: { tags: string[], types: string[] } = { tags: [], types: [] };
     try {
-        const data = fs.readFileSync(enumsFilePath, 'utf8');
-        return JSON.parse(data);
-    } catch (error: any) {
-        if (error.code === 'ENOENT') {
-            const defaultEnums = { tags: [], types: [] };
-            fs.writeFileSync(enumsFilePath, JSON.stringify(defaultEnums, null, 2), 'utf8');
-            return defaultEnums;
+        const fileContent = fs.readFileSync(filePath, 'utf8');
+        enums = JSON.parse(fileContent);
+    } catch (error) {
+        if (error instanceof SyntaxError) {
+            console.error("Error parsing JSON:", error);
+            enums = { tags: [], types: [] };
         } else {
             throw error;
         }
     }
+    return enums;
 };
 
 const createEnum = (list: string[]): { [key: string]: string } => {
@@ -29,6 +45,7 @@ const createEnum = (list: string[]): { [key: string]: string } => {
     });
     return enumObject;
 };
+
 
 const initializeEnums = () => {
     const { tags, types } = readEnumsFromFile();
