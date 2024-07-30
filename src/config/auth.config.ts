@@ -8,5 +8,5 @@ const config = {
     jwtExpiration : 60,
     jwtRefreshExpiration : 120
 }
-
+export const site = env.SITE
 export default config

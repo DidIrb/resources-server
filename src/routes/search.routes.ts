@@ -4,4 +4,4 @@ const searchRouter = express.Router()
 
 searchRouter.get('/', ctrl.searchResource);
 
-export default searchRouter;
+export default searchRouter; 

@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import corsOptions from "./config/cors.options";
+import path from 'path';
 dotenv.config();
 
 const app: Express = express();
@@ -15,7 +16,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 app.get("/", (req: Request, res: Response) => {
-    res.send("Express + TypeScript Server");
+    res.sendFile(path.join(__dirname, "../public/index.html"));
 });
 
 app.use(router);

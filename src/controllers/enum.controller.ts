@@ -15,7 +15,6 @@ const createDbFolderIfNotExists = () => {
 
 export const enumsFilePath = path.resolve('db/enums.json');
 
-
 export const readEnumsFromFile = () => {
     createDbFolderIfNotExists();
     const filePath = enumsFilePath;

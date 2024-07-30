@@ -5,6 +5,8 @@ This is an express backend that uses JSON file as a database to
 - Manage user data.
 - Get paginated data.
 - Advanced Search query.
+- Generate Sitemap.
+- Middleware to protect sitemap
 
 ## Getting started
 
