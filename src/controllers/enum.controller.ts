@@ -5,7 +5,6 @@ import { Request, Response } from 'express';
 let tagsEnum: { [key: string]: string } = {};
 let typesEnum: { [key: string]: string } = {};
 
-
 const createDbFolderIfNotExists = () => {
     const dbFolderPath = 'db';
     if (!fs.existsSync(dbFolderPath)) {

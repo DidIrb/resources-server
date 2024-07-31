@@ -8,6 +8,6 @@ userRouter.get("/", validateToken, ctrl.getUsers);
 userRouter.post("/", checkSecretPassword, ctrl.createUser);
 userRouter.patch("/:id", validateToken, ctrl.updateProfile);
 userRouter.put("/:id", validateToken, checkSecretPassword, ctrl.updateUser);
-userRouter.post("/:id", validateToken, checkSecretPassword, ctrl.deleteUser);
+userRouter.post("/:id", validateToken, checkSecretPassword, ctrl.softDeleteUser);
 
 export default userRouter;

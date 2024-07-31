@@ -1,119 +1,116 @@
 import { Request, Response } from 'express';
-import { User } from '../types/app.types';
 import bcrypt from "bcryptjs";
-import { getNextId, getUserFromJson, update } from "../utils/api";
-import fs from 'fs';
-import { v4 as uuidv4 } from 'uuid';
 import _ from "lodash"
+import User from '../models/user.model';
 
-
-const getUsers = (req: Request, res: Response) => {
+export const getUsers = async (req: Request, res: Response) => {
     try {
-        const users = getUserFromJson();
-        const usersWithoutPassword = users.map((user: User) => {
-            const { password, ...rest } = user;
-            return rest;
-        });
-        res.status(200).json(usersWithoutPassword);
+        const users = await User.find({}, '-password'); 
+        res.status(200).json(users);
     } catch (error) {
+        console.error(error);
         res.status(500).send({ error: 'Error retrieving users' });
     }
 };
 
-const createUser = async (req: Request, res: Response) => {
+export const createUser = async (req: Request, res: Response) => {
     try {
-        const users = getUserFromJson();
-        const newUser = req.body;
-        const { secret, ...userData } = newUser;
+        const data = req.body;
+        const existingUser = await User.findOne({ email: data.email });
 
-        const existingUser = users.find(user => user.email === newUser.email || user.username === newUser.username);
         if (existingUser) {
-            return res.status(400).json({ error: 'User with same email or username already exists' });
+            return res.status(400).json({ error: 'User with the same email already exists' });
         }
 
-        const hashedPassword = await bcrypt.hash(newUser.password, 10);
-        const id = getNextId(users);
-        const role = users.length === 0 ? 'super_admin' : 'user';
-        const user = { id, ...userData, password: hashedPassword, role, createdAt: new Date(), updatedAt: new Date() };
-        
-        users.push(user);
-        fs.writeFileSync('db/users.json', JSON.stringify(users, null, 2));
-        res.status(200).json({ message: "User created successfully" });
+        const hashedPassword = await bcrypt.hash(data.password, 10);
+        const user = new User({
+            ...data, password: hashedPassword, role: 'user', 
+        });
+
+        await user.save();
+        res.status(201).json({ message: 'User created successfully', user});
     } catch (error) {
+        console.error(error);
         res.status(500).send({ error: 'Error creating user' });
     }
 };
 
-const updateUser = async (req: Request, res: Response) => {
+export const updateUser = async (req: Request, res: Response) => {
     try {
-        const id = parseInt(req.params.id);
-        const users = getUserFromJson();
-        const user = users.find((user: User) => user.id === id);
+        const id = req.params.id; // Assuming the ID is a string (e.g., ObjectId)
+        const { password, ...updates } = req.body;
 
-        if (user) {
-            const { password, ...otherUpdates } = req.body;
-
-            if (password) {
-                const hashedPassword = await bcrypt.hash(password, 10);
-                otherUpdates.password = hashedPassword;
-            }
-
-            const updatedUsers = update(users, id, { ...otherUpdates, updatedAt: new Date() });
-            fs.writeFileSync('db/users.json', JSON.stringify(updatedUsers, null, 2));
-            res.status(200).json({ message: "User updated successfully" });
-        } else {
-            res.status(404).json({ error: "User not found" });
+        if (password) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            updates.password = hashedPassword;
         }
+
+        const updatedUser = await User.findOneAndUpdate(
+            { _id: id }, 
+            { $set: updates },
+            { new: true, select: '-password' }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.status(200).json({ message: 'User updated successfully', updatedUser});
     } catch (error) {
         res.status(500).send({ error: 'Error updating user' });
     }
 };
 
-const updateProfile = async (req: Request, res: Response) => {
+export const updateProfile = async (req: Request, res: Response) => {
     try {
-        const id = parseInt(req.params.id);
-        const users = getUserFromJson();
-        const user = users.find((user: User) => user.id === id);
+        const id = req.params.id;
+        const { password, role, ...updates } = req.body;
 
-        if (user) {
-            const { password, role, ...otherUpdates } = req.body;
-
-            // Prevent role from being updated
-            if (role) {
-                return res.status(403).json({ error: "You are not allowed to change your role" });
-            }
-
-            if (password) {
-                const hashedPassword = await bcrypt.hash(password, 10);
-                otherUpdates.password = hashedPassword;
-            }
-
-            const updatedUsers = update(users, id, { ...user, ...otherUpdates, updatedAt: new Date() });
-            fs.writeFileSync('db/users.json', JSON.stringify(updatedUsers, null, 2));
-            res.status(200).json({ message: "Profile updated successfully" });
-        } else {
-            res.status(404).json({ error: "User not found" });
+        if (role) {
+            return res.status(403).json({ error: "You are not allowed to change your role" });
         }
+
+        if (password) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            updates.password = hashedPassword;
+        }
+
+        const updatedUser = await User.findOneAndUpdate(
+            { _id: id }, 
+            { $set: updates }, 
+            { new: true, select: '-password' } 
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.status(200).json({ message: "Profile updated successfully" });
     } catch (error) {
         res.status(500).send({ error: 'Error updating profile' });
     }
 };
 
-const deleteUser = (req: Request, res: Response) => {
+
+
+export const softDeleteUser = async (req: Request, res: Response) => {
     try {
-        const users = getUserFromJson();
-        const id = parseInt(req.params.id);
-        const index = users.findIndex((user: User) => user.id === id);
-        if (index !== -1) {
-            users.splice(index, 1);
-            fs.writeFileSync('db/users.json', JSON.stringify(users, null, 2));
-            res.json({ message: 'User deleted successfully' }).status(200)
-        } else {
-            res.status(404).send({ error: 'User not found' })
+        const id = req.params.id;
+        const softDeletedUser = await User.findOneAndUpdate(
+            { _id: id },
+            { $set: { isDeleted: true, deletedAt: new Date() } },
+            { new: true, select: '-password' }
+        );
+
+        if (!softDeletedUser) {
+            return res.status(404).json({ error: 'User not found' });
         }
+
+        res.status(200).json({ message: 'User soft-deleted successfully' });
     } catch (error) {
-        res.status(500).send({ error: 'Error deleting user' });
+        res.status(500).send({ error: 'Error soft-deleting user' });
     }
 };
 
-export default { getUsers, updateUser, createUser, deleteUser, updateProfile };
+
+export default { getUsers, updateUser, createUser, softDeleteUser, updateProfile };
