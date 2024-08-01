@@ -15,7 +15,7 @@ const signin = async (req: Request, res: Response) => {
         if (!user || !(await bcrypt.compare(password, user.password))) {
             return res.status(400).json({ error: `Incorrect username and password combination` });
         }
-        
+
         const accessToken = jwt.sign({ user: user.id }, config.secret as Secret, { expiresIn: '30m' });
         res.cookie('access_token', accessToken, {
             httpOnly: true,
@@ -24,7 +24,7 @@ const signin = async (req: Request, res: Response) => {
             secure: true,
         });
 
-        const userData = { _id: user._id, username: user.username, email: user.email };
+        const userData = { id: user._id, username: user.username, email: user.email, role: user.role };
         res.status(200).json({
             message: `Login Successful. Welcome, ${user.username}`,
             data: userData,

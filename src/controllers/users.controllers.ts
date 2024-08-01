@@ -5,7 +5,7 @@ import User from '../models/user.model';
 
 export const getUsers = async (req: Request, res: Response) => {
     try {
-        const users = await User.find({}, '-password'); 
+        const users = await User.find({}, '_id username email role');
         res.status(200).json(users);
     } catch (error) {
         console.error(error);
@@ -48,14 +48,14 @@ export const updateUser = async (req: Request, res: Response) => {
         const updatedUser = await User.findOneAndUpdate(
             { _id: id }, 
             { $set: updates },
-            { new: true, select: '-password' }
+            { new: true, select: '_id username email role' }
         );
 
         if (!updatedUser) {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        res.status(200).json({ message: 'User updated successfully', updatedUser});
+        res.status(200).json({ message: 'User updated successfully', user: updatedUser});
     } catch (error) {
         res.status(500).send({ error: 'Error updating user' });
     }
