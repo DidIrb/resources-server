@@ -1,7 +1,7 @@
 import fs from "fs";
 import { User } from "../types/app.types";
 import { Resources } from "../types/data.types";
-import { tagsEnum, typesEnum } from "../controllers/enum.controller";
+import { tagsEnum, topicsEnum, typesEnum } from "../controllers/enum.controller";
 import * as path from 'path';
 export const update = (arr: any[], id: number, update: any) => {
     return arr.map((item) => (item.id === id ? { ...item, ...update } : item));
@@ -50,6 +50,9 @@ export const getDataFromJson = () => {
 export function isValidResources(obj: any): obj is Resources {
     if (!Object.values(typesEnum).includes(obj.type)) {
         throw new Error(`Invalid type value: ${obj.type}`);
+    }
+    if (!Object.values(topicsEnum).includes(obj.topic)) {
+        throw new Error(`Invalid type value: ${obj.topic}`);
     }
     if (typeof obj.title !== 'string' || obj.title.trim() === '') {
         throw new Error('Title is required');

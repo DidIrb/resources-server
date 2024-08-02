@@ -7,6 +7,6 @@ const dataRouter = express.Router()
 dataRouter.get('/', ctrl.getData);
 dataRouter.post('/', validateToken, checkSecretPassword, ctrl.create);
 dataRouter.put('/:uuid', validateToken, checkSecretPassword, ctrl.update);
-dataRouter.delete('/:uuid', validateToken, checkSecretPassword, ctrl.deleteResource);
+dataRouter.delete('/:uuid', validateToken, ctrl.deleteResource);
 
 export default dataRouter;

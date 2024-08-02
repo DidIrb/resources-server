@@ -58,7 +58,7 @@ const createTags = async (req: Request, res: Response) => {
         const array = data.map(item => item.value);
         tagsEnum = createEnum(array); 
 
-        res.status(201).json({message: "Topic Created successfully"});
+        res.status(201).json({message: "Topic Created successfully", data: newTag});
     } catch (error) {
         res.status(500).json({ error: 'Error creating tag' });
     }
@@ -71,15 +71,12 @@ const createTypes = async (req: Request, res: Response) => {
 
         const existingType = await Type.findOne({ value });
         if (existingType) return res.status(409).json({ error: 'Type already exists' });
-
         const newType = await Type.create({ value });
-
-        // update enums
         let data = await Tag.find({}, 'value');
         const array = data.map(item => item.value);
         typesEnum = createEnum(array); 
 
-        res.status(201).json({message: "Topic Created successfully"});
+        res.status(201).json({message: "Topic Created successfully", data: newType});
     } catch (error) {
         res.status(500).json({ error: 'Error creating type' });
     }
@@ -99,7 +96,7 @@ const createTopics = async (req: Request, res: Response) => {
         const array = data.map(item => item.value);
         topicsEnum = createEnum(array); 
 
-        res.status(201).json({message: "Topic Created successfully"});
+        res.status(201).json({message: "Topic Created successfully", data: newTopic});
     } catch (error) {
         res.status(500).json({ error: 'Error creating topic' });
     }

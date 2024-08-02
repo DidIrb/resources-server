@@ -2,65 +2,86 @@
 import { Request, Response } from 'express';
 import fs from 'fs';
 import _ from "lodash";
-import { v4 as uuidv4 } from 'uuid';
 import { getDataFromJson, isValidResources } from '../utils/api';
+import Resources from '../models/resources.model';
+import { paginate } from 'mongoose-paginate-v2';
 
-const getData = (req: Request, res: Response) => {
+// const getData = (req: Request, res: Response) => {
+//     try {
+//         const page = req.query.page ? parseInt(req.query.page.toString()) : 1;
+//         const pageSize = req.query.pageSize ? parseInt(req.query.pageSize.toString()) : 10; 
+//         const data = getDataFromJson();
+
+//         if (isNaN(page) || page < 1 || isNaN(pageSize) || pageSize < 1) {
+//             res.status(400).json({ error: 'Invalid page number or page size' });
+//             return;
+//         }
+
+//         const totalItems = data.length;
+//         const totalPages = Math.ceil(totalItems / pageSize);
+
+//         const startIndex = (page - 1) * pageSize;
+//         const endIndex = page * pageSize;
+//         const responseData = data.slice(startIndex, endIndex);
+
+//         res.status(200).json({
+//             data: responseData,
+//             currentPage: page,
+//             totalPages,
+//             totalItems,
+//         });
+//     } catch (error: any) {
+//         res.status(500).json({ error: error.message });
+//     }
+// };
+
+
+const getData = async (req: Request, res: Response) => {
+    const { page = 1, limit = 10 } = req.query;
+
     try {
-        const page = req.query.page ? parseInt(req.query.page.toString()) : 1;
-        const pageSize = req.query.pageSize ? parseInt(req.query.pageSize.toString()) : 10; 
-        const data = getDataFromJson();
+        const options = {
+            page: parseInt(page as string),
+            limit: parseInt(limit as string),
+        };
 
-        if (isNaN(page) || page < 1 || isNaN(pageSize) || pageSize < 1) {
-            res.status(400).json({ error: 'Invalid page number or page size' });
-            return;
-        }
+        const result = await Resources.paginate({}, options);
 
-        const totalItems = data.length;
-        const totalPages = Math.ceil(totalItems / pageSize);
-
-        const startIndex = (page - 1) * pageSize;
-        const endIndex = page * pageSize;
-        const responseData = data.slice(startIndex, endIndex);
-
-        res.status(200).json({
-            data: responseData,
-            currentPage: page,
-            totalPages,
-            totalItems,
+        res.json({
+            data: result.docs, 
+            totalItems: result.totalDocs,
+            totalPages: result.totalPages,
+            currentPage: result.page,
         });
+
     } catch (error: any) {
-        res.status(500).json({ error: error.message });
+        console.error('Error fetching paginated resources:', error.message);
+        res.status(500).json({ error: 'Internal server error' });
     }
 };
 
 
 const create = async (req: Request, res: Response) => {
     try {
-        const existingData = getDataFromJson();
-        const newData = _.omit(req.body, 'secret');
+        const data = _.omit(req.body, 'secret');
 
-        if (!isValidResources(newData)) {
+        if (!isValidResources(data)) {
             throw new Error('Invalid resource data');
         }
-        
-        const titleExists = existingData.some((resource) => resource.title === newData.title);
-        if (titleExists) {
-            throw new Error('Resource with the same title already exists');
-        }
 
-        const uniqueId = uuidv4();
-        const data = _.assign({ id: uniqueId }, _.clone(newData), { createdAt: new Date(), updatedAt: new Date() });
+        const existingResource = await Resources.findOne({ title: data.title });
+        if (existingResource) return res.status(409).json({ error: 'Resource already exists' });
 
-        existingData.push(data);
-        fs.writeFileSync('db/resources.json', JSON.stringify(existingData, null, 2));
-        res.status(200).json({ message: "Resource created successfully" });
+        const newResource = new Resources({...data});
+        await newResource.save();
+
+        res.status(200).json({ message: 'Resource created successfully' });
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }
 };
 
-const update = async (req: Request, res: Response) => {
+const update2 = async (req: Request, res: Response) => {
     try {
         const existingData = getDataFromJson();
         const { uuid } = req.params;
@@ -87,7 +108,27 @@ const update = async (req: Request, res: Response) => {
 };
 
 
-const deleteResource = async (req: Request, res: Response) => {
+const update = async (req: Request, res: Response) => {
+    try {
+        const { uuid } = req.params;
+        const data = _.omit(req.body, 'secret');
+
+        if (!isValidResources(data)) throw new Error('Invalid resource data');
+        
+        const existingResource = await Resources.findById(uuid);
+        console.log(uuid, existingResource)
+        if (!existingResource) return res.status(404).json({ error: 'Resource not found' });
+
+        existingResource.set({...data, updatedAt: new Date()});
+        await existingResource.save();
+
+        res.status(200).json({ message: 'Resource updated successfully', data: existingResource });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const deleteResource2 = async (req: Request, res: Response) => {
     try {
         const existingData = getDataFromJson();
         const { uuid } = req.params;
@@ -102,6 +143,24 @@ const deleteResource = async (req: Request, res: Response) => {
         res.status(200).json({ message: "Resource deleted successfully" });
     } catch (error: any) {
         res.status(500).json({ message: error.message });
+    }
+};
+
+//  DELETE IS PERMANENT AND RESOURCE CANNOT BE RECOVERED
+const deleteResource = async (req: Request, res: Response) => {
+    const { uuid } = req.params;
+
+    try {
+        const deletedResource = await Resources.deleteOne({ _id: uuid });
+
+        if (deletedResource.deletedCount === 1) {
+            res.json({ message: 'Resource deleted successfully' });
+        } else {
+            res.status(404).json({ error: 'Resource not found' });
+        }
+    } catch (error: any) {
+        console.error('Error deleting resource:', error.message);
+        res.status(500).json({ error: 'Internal server error' });
     }
 };
 
