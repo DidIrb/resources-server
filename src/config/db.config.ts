@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 
 const hashedPassword = env.ADMIN_HASHED_PWD as string;
 const uri = env.MONGO_URI as string;
+
 const default_user = {
     username: env.ADMIN_USERNAME,
     password: hashedPassword,
@@ -21,6 +22,7 @@ async function mongoInit() {
             await User.create(default_user);
             console.log('Super admin user created successfully.');
         } else {
+            // Incase you need to update your super admins details
             // Update the existing user
             // const updatedUser = await User.findOneAndUpdate(
             //     { username: env.ADMIN_USERNAME },
@@ -36,6 +38,5 @@ async function mongoInit() {
         console.error('Error connecting to MongoDB:', error);
     }
 }
-
 
 export default mongoInit;

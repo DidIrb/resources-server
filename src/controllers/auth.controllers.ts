@@ -16,7 +16,7 @@ const signin = async (req: Request, res: Response) => {
             return res.status(400).json({ error: `Incorrect username and password combination` });
         }
 
-        const accessToken = jwt.sign({ user: user.id }, config.secret as Secret, { expiresIn: '30m' });
+        const accessToken = jwt.sign({ user: user._id }, config.secret as Secret, { expiresIn: '30m' });
         res.cookie('access_token', accessToken, {
             httpOnly: true,
             maxAge: 30 * 1000 * 60,

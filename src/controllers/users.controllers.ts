@@ -112,5 +112,4 @@ export const softDeleteUser = async (req: Request, res: Response) => {
     }
 };
 
-
 export default { getUsers, updateUser, createUser, softDeleteUser, updateProfile };

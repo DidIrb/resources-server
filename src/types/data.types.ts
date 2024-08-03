@@ -1,10 +1,3 @@
-// Filter to prevent duplicates
-export enum tags {
-    "coding", "github"
-}
-export enum types {
-    "tool", "website", "app"
-}
 
 export enum Roles {
     Admin = "admin",
@@ -23,7 +16,8 @@ export interface Resources {
     updatedAt: Date;
 }
 
-export interface CustomError {
-    message: string;
-    [key: string]: any;
+
+export type sitemapData = {
+    title: string;
+    updatedAt: Date;
 }

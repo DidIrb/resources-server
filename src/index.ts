@@ -20,6 +20,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use(router);
+// Return JSON and also 404 page
 app.all("*", (req: Request, res: Response) => {
     return res.status(404).json({ error: "Page not found" });
 });
