@@ -75,37 +75,37 @@ const create = async (req: Request, res: Response) => {
         const newResource = new Resources({...data});
         await newResource.save();
 
-        res.status(200).json({ message: 'Resource created successfully' });
+        res.status(200).json({ message: 'Resource created successfully', data: newResource });
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }
 };
 
-const update2 = async (req: Request, res: Response) => {
-    try {
-        const existingData = getDataFromJson();
-        const { uuid } = req.params;
-        const newData = _.omit(req.body, 'secret');
+// const update2 = async (req: Request, res: Response) => {
+//     try {
+//         const existingData = getDataFromJson();
+//         const { uuid } = req.params;
+//         const newData = _.omit(req.body, 'secret');
 
-        if (!isValidResources(newData)) {
-            throw new Error('Invalid resource data');
-        }
+//         if (!isValidResources(newData)) {
+//             throw new Error('Invalid resource data');
+//         }
 
-        const resourceIndex = existingData.findIndex((data) => data.id === uuid);
+//         const resourceIndex = existingData.findIndex((data) => data.id === uuid);
 
-        if (resourceIndex === -1) {
-            throw new Error('Resource not found');
-        }
+//         if (resourceIndex === -1) {
+//             throw new Error('Resource not found');
+//         }
 
-        const updatedData = _.assign(existingData[resourceIndex], newData, {updatedAt: new Date});
-        existingData[resourceIndex] = updatedData;
+//         const updatedData = _.assign(existingData[resourceIndex], newData, {updatedAt: new Date});
+//         existingData[resourceIndex] = updatedData;
 
-        fs.writeFileSync('db/resources.json', JSON.stringify(existingData, null, 2));
-        res.status(200).json({ message: "Resource updated successfully" });
-    } catch (error: any) {
-        res.status(500).json({ error: error.message });
-    }
-};
+//         fs.writeFileSync('db/resources.json', JSON.stringify(existingData, null, 2));
+//         res.status(200).json({ message: "Resource updated successfully" });
+//     } catch (error: any) {
+//         res.status(500).json({ error: error.message });
+//     }
+// };
 
 
 const update = async (req: Request, res: Response) => {
@@ -128,25 +128,26 @@ const update = async (req: Request, res: Response) => {
     }
 };
 
-const deleteResource2 = async (req: Request, res: Response) => {
-    try {
-        const existingData = getDataFromJson();
-        const { uuid } = req.params;
+// const deleteResource2 = async (req: Request, res: Response) => {
+//     try {
+//         const existingData = getDataFromJson();
+//         const { uuid } = req.params;
 
-        const updatedData = existingData.filter((data) => data.id !== uuid);
+//         const updatedData = existingData.filter((data) => data.id !== uuid);
 
-        if (updatedData.length === existingData.length) {
-            throw new Error('Resource not found');
-        }
+//         if (updatedData.length === existingData.length) {
+//             throw new Error('Resource not found');
+//         }
 
-        fs.writeFileSync('db/resources.json', JSON.stringify(updatedData, null, 2));
-        res.status(200).json({ message: "Resource deleted successfully" });
-    } catch (error: any) {
-        res.status(500).json({ message: error.message });
-    }
-};
+//         fs.writeFileSync('db/resources.json', JSON.stringify(updatedData, null, 2));
+//         res.status(200).json({ message: "Resource deleted successfully" });
+//     } catch (error: any) {
+//         res.status(500).json({ message: error.message });
+//     }
+// };
 
 //  DELETE IS PERMANENT AND RESOURCE CANNOT BE RECOVERED
+
 const deleteResource = async (req: Request, res: Response) => {
     const { uuid } = req.params;
 
