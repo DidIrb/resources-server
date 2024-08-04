@@ -38,8 +38,7 @@ const getEnums = async (req: Request, res: Response) => {
         const response = await getData();
         res.status(200).json(response);
     } catch (error) {
-        console.error('Error fetching tags, types, and topics:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Error fetching tags, types, and topics' });
     }
 };
 

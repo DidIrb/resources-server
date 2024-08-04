@@ -22,13 +22,10 @@ const getData = async (req: Request, res: Response) => {
             currentPage: result.page,
         });
 
-    } catch (error: any) {
-        console.error('Error fetching paginated resources:', error.message);
-        res.status(500).json({ error: 'Internal server error' });
+    } catch (error) {
+        res.status(500).json({ error: 'Error fetching paginated resources'});
     }
 };
-
-
 const create = async (req: Request, res: Response) => {
     try {
         const data = _.omit(req.body, 'secret');
@@ -55,7 +52,6 @@ const update = async (req: Request, res: Response) => {
         if (!isValidResources(data)) throw new Error('Invalid resource data');
         
         const existingResource = await Resources.findById(uuid);
-        console.log(uuid, existingResource)
         if (!existingResource) return res.status(404).json({ error: 'Resource not found' });
 
         existingResource.set({...data, updatedAt: new Date()});
@@ -77,9 +73,8 @@ const deleteResource = async (req: Request, res: Response) => {
         } else {
             res.status(404).json({ error: 'Resource not found' });
         }
-    } catch (error: any) {
-        console.error('Error deleting resource:', error.message);
-        res.status(500).json({ error: 'Internal server error' });
+    } catch (error) {
+        res.status(500).json({ error: 'Error deleting resource:' });
     }
 };
 

@@ -3,7 +3,6 @@ import Resources from "../models/resources.model";
 
 const searchResource = async (req: Request, res: Response) => {
     try {
-        console.log("Search Query")
         const { query, tags, topic, type, page = 1, perPage = 10 } = req.query;
         const searchQuery: any = {};
         const itemsPerPage = Number(perPage);
@@ -29,8 +28,6 @@ const searchResource = async (req: Request, res: Response) => {
             searchQuery.type = { $in: typeArray };
         }
 
-
-        console.log('Search Query:', searchQuery);
         const totalResults = await Resources.countDocuments(searchQuery);
         const totalPages = Math.ceil(totalResults / itemsPerPage); // Calculate total pages
 
@@ -46,8 +43,7 @@ const searchResource = async (req: Request, res: Response) => {
         });
 
     } catch (error) {
-        console.error('Error searching resources:', error);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ message: 'Error searching resources:' });
     }
 };
 

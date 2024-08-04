@@ -40,7 +40,7 @@ const signout = async (req: Request, res: Response) => {
         return res.status(200).json({ message: 'User logged out successfully' });
     } catch (error: any) {
         console.error("Error logging out:", error);
-        return res.status(200).json({ message: error.message });
+        return res.status(200).json({error: "Error logging out:", message: error.message });
     }
 };
 

@@ -1,5 +1,5 @@
 import { tagsEnum, topicsEnum, typesEnum } from "../controllers/enum.controller";
-import { Resources } from "../types/data.types";
+import { Resources } from "../types/app";
 
 export function isValidResources(obj: any): obj is Resources {
     if (!Object.values(typesEnum).includes(obj.type)) {

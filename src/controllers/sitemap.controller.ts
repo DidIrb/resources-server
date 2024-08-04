@@ -1,12 +1,11 @@
 import { Request, Response } from 'express';
 import { site } from '../config/auth.config';
 import Resources from '../models/resources.model';
-import { sitemapData } from '../types/data.types';
+import { sitemapData } from '../types/app';
+
 
 const generateXML  = async (req: Request, res: Response) => {
   try {
-    // GET ALL DATA ROM RESOURCES TABLE
-    // const data = await getDataFromJson();
     const data = await Resources.find({}, 'title updatedAt');
     const sitemapXml = generateSitemapXml(data);
     res.header('Content-Type', 'application/xml');

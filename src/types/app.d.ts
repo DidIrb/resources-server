@@ -1,8 +1,9 @@
-
-export enum Roles {
-    Admin = "admin",
-    User = "user",
-    SuperAdmin = "super_admin"
+export type User = {
+    id: number;
+    username: string;
+    email: string;
+    role: string;
+    password: string;
 }
 
 export interface Resources {
@@ -16,6 +17,12 @@ export interface Resources {
     updatedAt: Date;
 }
 
+
+export enum Roles {
+    Admin = "admin",
+    User = "user",
+    SuperAdmin = "super_admin"
+}
 
 export type sitemapData = {
     title: string;
