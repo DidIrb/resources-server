@@ -1,11 +1,12 @@
 import { Request, Response } from 'express';
-import { getDataFromJson } from '../utils/api';
-import { Resources } from '../types/data.types';
 import { site } from '../config/auth.config';
+import Resources from '../models/resources.model';
+import { sitemapData } from '../types/app';
 
-const generateXML = (req: Request, res: Response) => {
+
+const generateXML  = async (req: Request, res: Response) => {
   try {
-    const data = getDataFromJson();
+    const data = await Resources.find({}, 'title updatedAt');
     const sitemapXml = generateSitemapXml(data);
     res.header('Content-Type', 'application/xml');
     res.header('Content-Disposition', 'attachment; filename="sitemap.xml"');
@@ -25,7 +26,7 @@ const generateSitemapXml = (data: any) => {
     <url>
         <loc>${site}/home</loc>
         <lastmod>2024-07-30</lastmod>
-    </url>${data.map((item: Resources) => `
+    </url>${data.map((item: sitemapData) => `
     <url>
         <loc>${site}/resource/${item.title}</loc>
         <lastmod>${item.updatedAt}</lastmod>

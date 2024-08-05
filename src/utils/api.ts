@@ -1,55 +1,12 @@
-import fs from "fs";
-import { User } from "../types/app.types";
-import { Resources } from "../types/data.types";
-import { tagsEnum, typesEnum } from "../controllers/enum.controller";
-import * as path from 'path';
-export const update = (arr: any[], id: number, update: any) => {
-    return arr.map((item) => (item.id === id ? { ...item, ...update } : item));
-}
-
-const createDbFolderIfNotExists = () => {
-    const dbFolderPath = 'db';
-    if (!fs.existsSync(dbFolderPath)) {
-        fs.mkdirSync(dbFolderPath);
-    }
-}
-
-
-export const getUserFromJson = () => {
-    createDbFolderIfNotExists();
-    const filePath = 'db/users.json';
-    if (!fs.existsSync(filePath)) {
-        fs.writeFileSync(filePath, '[]');
-    }
-    let users: User[] = [];
-    try {
-        const fileContent = fs.readFileSync(filePath, 'utf8');
-        users = JSON.parse(fileContent);
-    } catch (error) {
-        if (error instanceof SyntaxError) {
-            console.error("Error parsing JSON:", error);
-            users = [];
-        } else {
-            throw error;
-        }
-    }
-    return users;
-};
-
-export const getDataFromJson = () => {
-    createDbFolderIfNotExists();
-    const filePath = 'db/resources.json';
-    if (!fs.existsSync(filePath)) {
-        fs.writeFileSync(filePath, '[]');
-    }
-    const data: Resources[] = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    return data;
-};
-
+import { tagsEnum, topicsEnum, typesEnum } from "../controllers/enum.controller";
+import { Resources } from "../types/app";
 
 export function isValidResources(obj: any): obj is Resources {
     if (!Object.values(typesEnum).includes(obj.type)) {
         throw new Error(`Invalid type value: ${obj.type}`);
+    }
+    if (!Object.values(topicsEnum).includes(obj.topic)) {
+        throw new Error(`Invalid type value: ${obj.topic}`);
     }
     if (typeof obj.title !== 'string' || obj.title.trim() === '') {
         throw new Error('Title is required');
@@ -69,13 +26,4 @@ export function isValidResources(obj: any): obj is Resources {
         }
     }
     return true;
-}
-
-export function getNextId(array: User[]) {
-    if (array.length === 0) {
-        return 1;
-    } else {
-        const lastId = array[array.length - 1].id;
-        return lastId + 1;
-    }
 }
