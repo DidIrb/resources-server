@@ -8,6 +8,7 @@
 body {
   padding: 1rem;
   padding-top: 0;
+  overflow: hidden;
 }
 nav {
     position: sticky;
