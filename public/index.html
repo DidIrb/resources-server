@@ -1,13 +1,78 @@
-<!-- Documentation -->
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="A collection of helpful resources" />
+    <link rel="icon" type="image/svg+xml" href="box.svg" class="rotate-45" />
     <meta name="author" content="Dida Irbaye" />
+    <link rel="stylesheet" href="styles.css" />
     <title>Resources | Backend</title>
-</head>
-<body>
-    <h3>Don't Know how you got here but hey - Welcome to the Backend</h3> 
-</body>
+  </head>
+  <body>
+    <nav class="flex-b">
+      <h2 class="flex-b">
+        <img class="rotate-45 icon" src="box.svg" />
+        Resources Backend
+      </h2>
+    </nav>
+
+    <section id="home " class="home">
+      <h2>Welcome to Resources Backend</h2>
+      <p>Don't Know how you got new here but <br /></p>
+      <p>(●'◡'●) hey</p>
+      <p>
+        <span style="font-weight: 700;">Welcome. </span> This is a backend for a resources website. It includes a
+        RESTful API built with Node.js, Express, and MongoDB. The frontend is
+        built with React.js and Tailwind CSS.
+      </p>
+      <ul class="flex badge-list">
+        <li class="badge">Node.js</li>
+        <li class="badge">Express.js</li>
+        <li class="badge">MongoDB</li>
+        <li class="badge">Open Source</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="text-center">Endpoints</h2>
+      <h3 class="pb-3">Public</h3>
+      <div class="flex"> <a class="badge">Get</a> <div>/api/v1/enums</div> </div>
+      <div class="flex"> <a class="badge">Get</a> <div>/api/v1/resources</div></div>
+      <div class="flex"> <a class="badge">Get</a> <div>/api/v1/search</div></div>
+      <div class="flex pb-3"> <a class="badge">Post</a> <div>/api/v1/auth/signin</div></div>
+
+      <h3>Private</h3>
+      <div class="flex">
+        <div class="users">
+          <p>User Management</p>
+          <div class="flex"> <div class="badge">Get</div> <div>/api/v1/users</div></div>
+          <div class="flex"> <div class="badge">Post</div> <div>/api/v1/users</div></div>
+          <div class="flex"> <div class="badge">Put</div> <div>/api/v1/users/:id</div></div>
+          <div class="flex"> <div class="badge">Patch</div> <div>/api/v1/users/:id</div></div>
+          <div class="flex"> <div class="badge">Delete</div> <div>/api/v1/users/:id</div></div>
+        </div>
+        <hr>
+        <div class="enums">
+          <p>Resources</p>
+          <div class="flex"> <div class="badge">Post</div> <div>/api/v1/resources</div></div>
+          <div class="flex"> <div class="badge">Put</div> <div>/api/v1/resources/:id</div></div>
+          <div class="flex"> <div class="badge">Delete</div> <div>/api/v1/resources/:id</div></div>
+        </div>
+        <hr>
+        <div class="sitemap">
+          <p>Others</p>
+          <div class="flex"> <div class="badge">Get</div> <div>/api/v1/sitemap</div></div>
+          <div class="flex"> <div class="badge">Post</div> <div>/api/v1/signout</div></div>
+        </div>
+      </div>
+      <p>
+        Source Code:
+        <a href="https://github.com/DidIrb/resources-server"
+          >https://github.com/DidIrb/resources-server</a
+        >
+      </p>
+    </section>
+    <p class="footer">Developed by <a href="https://irbaye.com">Dida Irbaye</a> </p>
+    <script src="script.js"></script>
+  </body>
 </html>

@@ -1,0 +1,107 @@
+/* Possible fonts Calibri, Cambria, Georgia*/
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: Calibri;
+}
+body {
+  padding: 1rem;
+  padding-top: 0;
+}
+nav {
+    position: sticky;
+    background-color: white;
+    top: 0;
+}
+
+
+section p {
+    max-width: 600px;
+}
+
+p {
+    padding: 5px 0;
+}
+
+nav {
+  height: 60px;
+  padding-right: 12px;
+}
+a {
+  text-decoration: none;
+}
+ul li {
+  list-style: none;
+}
+p, li {
+  font-size: 17px;
+}
+ul li a {
+  color: black;
+  font-size: 17px;
+}
+.icon {
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+/* REUSABLE / GLOBAL */
+.rotate-45 {
+  rotate: 45deg;
+}
+.badge {
+  background-color: white;
+  border: 1px solid gray;
+  color: black;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 12px;
+  text-align: center;
+  border-radius: 15px;
+}
+.pb-3 {
+    padding-bottom: 10px;
+}
+.text-center {
+    text-align: center;
+}
+.text-start {
+    text-align: start;
+}
+h2, h3, h4 {
+  margin-bottom: 6px;
+}
+.flex-b {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+body {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+.flex {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+
+.home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.badge-list {
+  padding: 10px 0;
+}
+
+#Endpoints {
+ width: 500px;
+}

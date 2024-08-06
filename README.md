@@ -1,4 +1,5 @@
-# JSON DATABASE
+# Resources Backend
+
 This is an express backend that uses JSON file as a database to 
 - Manage data in json file.
 - Authenticate users.
@@ -7,6 +8,7 @@ This is an express backend that uses JSON file as a database to
 - Advanced Search query.
 - Generate Sitemap.
 - Middleware to protect sitemap
+- rate limiter - 100 request per ip address over 15 minute periods
 
 ## Getting started
 

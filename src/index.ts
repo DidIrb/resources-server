@@ -1,19 +1,22 @@
-import express, { Response, Request, Express } from 'express';
-import router from './routes/routes';
-import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import corsOptions from "./config/cors.options";
+import dotenv from "dotenv";
+import express, { Express, Request, Response } from 'express';
 import path from 'path';
-dotenv.config();
+import corsOptions from "./config/cors.options";
 import mongoInit from './config/db.config';
+import limiter from './middleware/limiter.middleware';
+import router from './routes/routes';
+dotenv.config();
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
 app.use(cookieParser());
 app.use(cors(corsOptions)); 
-
+app.use(express.static("public"));
 app.use(express.json());
+
+app.use(limiter);
 
 app.get("/", (req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, "../public/index.html"));

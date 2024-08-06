@@ -6,3 +6,4 @@ backend
 .vercel
 .vercelignore
 dist
+.hidden
