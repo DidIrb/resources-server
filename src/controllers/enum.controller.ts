@@ -8,6 +8,7 @@ let typesEnum: { [key: string]: string } = {};
 let topicsEnum: { [key: string]: string } = {};
 
 const createEnum = (list: string[]): { [key: string]: string } => {
+    console.log("Updating Enums")
     const enumObject: { [key: string]: string } = {};
     list.forEach(item => {
         enumObject[item.charAt(0).toUpperCase() + item.slice(1)] = item;

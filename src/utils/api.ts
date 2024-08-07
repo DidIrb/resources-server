@@ -2,12 +2,12 @@ import { tagsEnum, topicsEnum, typesEnum } from "../controllers/enum.controller"
 import { Resources } from "../types/app";
 
 export function isValidResources(obj: any): obj is Resources {
-    if (!Object.values(typesEnum).includes(obj.type)) {
-        throw new Error(`Invalid type value: ${obj.type}`);
-    }
-    if (!Object.values(topicsEnum).includes(obj.topic)) {
-        throw new Error(`Invalid type value: ${obj.topic}`);
-    }
+    // if (!Object.values(typesEnum).includes(obj.type)) {
+    //     throw new Error(`Invalid type value: ${obj.type}`);
+    // }
+    // if (!Object.values(topicsEnum).includes(obj.topic)) {
+    //     throw new Error(`Invalid type value: ${obj.topic}`);
+    // }
     if (typeof obj.title !== 'string' || obj.title.trim() === '') {
         throw new Error('Title is required');
     }
@@ -20,10 +20,11 @@ export function isValidResources(obj: any): obj is Resources {
     if (!Array.isArray(obj.tags)) {
         throw new Error('Tags must be an array');
     }
-    for (const tag of obj.tags) {
-        if (!Object.values(tagsEnum).includes(tag)) {
-            throw new Error(`Invalid tag value: ${tag}`);
-        }
-    }
+    // for (const tag of obj.tags) {
+    //     if (!Object.values(tagsEnum).includes(tag)) {
+    //         throw new Error(`Invalid tag value: ${tag}`);
+    //     }
+    // }
+    // Disabling check since render does not persistent storage and spins down server constantly
     return true;
 }

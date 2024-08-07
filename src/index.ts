@@ -16,7 +16,13 @@ app.use(cors(corsOptions));
 app.use(express.static("public"));
 app.use(express.json());
 
+app.set('trust proxy', 1);
+
 app.use(limiter);
+
+app.get('/ip', (req, res) => {
+    res.send(req.ip);
+});
 
 app.get("/", (req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, "../public/index.html"));
