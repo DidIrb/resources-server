@@ -7,6 +7,7 @@ import corsOptions from "./config/cors.options";
 import mongoInit from './config/db.config';
 import limiter from './middleware/limiter.middleware';
 import router from './routes/routes';
+import { reloadWebsite } from "./utils/reload";
 dotenv.config();
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -15,6 +16,10 @@ app.use(cookieParser());
 app.use(cors(corsOptions)); 
 app.use(express.static("public"));
 app.use(express.json());
+
+const interval: number = 30000; // Interval in milliseconds (30 seconds)
+
+setInterval(reloadWebsite, interval);
 
 app.set('trust proxy', 1);
 
