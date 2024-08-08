@@ -15,7 +15,7 @@ This is an express backend that uses JSON file as a database to
 Clone the branch
 
 ```
-git clone https://github.com/DidIrb/resources.git
+git clone https://github.com/DidIrb/resources-server.git
 ```
 Install dependencies
 ```
@@ -27,8 +27,6 @@ Run code
 npm run dev
 ```
 Rename `.env.example` file to `.env` and add the proper values
-
-
 
 ## License
 
