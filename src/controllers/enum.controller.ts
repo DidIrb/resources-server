@@ -113,7 +113,7 @@ const initializeEnums = async () => {
     }
 };
 
-initializeEnums();
+// initializeEnums();
 
 export { tagsEnum, typesEnum, topicsEnum};
 export default { createTags, createTypes, createTopics, getEnums };

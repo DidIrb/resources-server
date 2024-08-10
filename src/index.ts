@@ -8,6 +8,10 @@ import mongoInit from './config/db.config';
 import limiter from './middleware/limiter.middleware';
 import router from './routes/routes';
 import { reloadWebsite } from "./utils/reload";
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
+import options from "./config/swagger.config";
+
 dotenv.config();
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -17,11 +21,18 @@ app.use(cors(corsOptions));
 app.use(express.static("public"));
 app.use(express.json());
 
-const interval: number = 30000; // Interval in milliseconds (30 seconds)
+// const interval: number = 30000; // 30 seconds
+const interval: number = 600000; // 10 minutes
 
 setInterval(reloadWebsite, interval);
 
 app.set('trust proxy', 1);
+
+// Initialize swagger-jsdoc
+const swaggerSpec = swaggerJsdoc(options);
+
+// Serve Swagger docs
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(limiter);
 
