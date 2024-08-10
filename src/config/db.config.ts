@@ -13,12 +13,19 @@ const default_user = {
 }
 
 async function mongoInit() {
+    console.log(`attempting connection to ${uri}`)
     try {
+        await mongoose.connect(uri, {
+            maxPoolSize: 10, // Adjust the pool size as needed
+            ssl: true // Ensure SSL is enabled
+        });
+
         await mongoose.connect(uri);
         await mongoose.connection.db.admin().command({ ping: 1 });
 
         const superAdminUser = await User.findOne({ username: env.ADMIN_USERNAME });
         if (!superAdminUser) {
+            
             await User.create(default_user);
             console.log('Super admin user created successfully.');
         } else {

@@ -16,13 +16,17 @@ nav {
     top: 0;
 }
 
-
 section p {
     max-width: 600px;
 }
 
 p {
     padding: 5px 0;
+}
+.footer {
+  position: absolute;
+  bottom: 4px;
+  right: 24px;
 }
 
 nav {
